@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
+import Day from './components/Day';
 
   function App() {
 
@@ -66,14 +67,56 @@ import './App.css';
     // eslint-disable-next-line 
     }, []);
 
+    function numberList(data) {
+      const date = data.map((day) => day.dt_txt.slice(0,10));
+      const unique = [...new Set(date)];
+
+      const map = new Map();
+      unique.forEach(d => {
+        let arrayList = []
+        data.forEach(listItem => {
+          if(d === listItem.dt_txt.slice(0,10)) {
+            arrayList.push(listItem)
+          }
+        })
+
+        map.set(d, arrayList)
+      })
+      
+      const test = []
+
+      map.forEach((date, value) => (
+       test.push(
+        <li key={value.toString()}>
+         <div>
+          <h2>
+            {value}
+          </h2>
+         <div
+          className="design"
+         >
+           {date.map(dat => 
+             <span key={dat.dt_txt.toString()}><Day data={dat} /></span>
+            )}
+        </div>
+         </div>
+        </li>
+        )
+      ));
+
+      return (
+        <ul>{test}</ul>
+      );
+    }
+
   return (
-    <div className="App">
-      <h1>Weatherhino</h1>
-      {forecast.list && 
-         <p>{forecast.list[0].weather[0].main}</p> 
-      }
-     
-    </div>
+      <div className="App">
+        <h1 className="App-header">Weatherhino</h1>
+        <div className="Logo"></div>
+        {forecast.list &&
+        numberList(forecast.list)
+        }
+      </div>
   );
 }
 
